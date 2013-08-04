@@ -2,10 +2,57 @@
 use strict;
 use warnings;
 use v5.16.3;
+package
+    natas16;
+# VERSION
+# ABSTRACT: solve level 16 of overthewire.org's Natas server-side security war games
 
 use Carp qw/ confess /;
 use URI;
 use HTTP::Tiny 0.034;
+
+=head1 SYNOPSIS
+
+    natas16 password
+
+=for test_synopsis
+1;
+__END__
+
+=head1 OPTIONS
+
+=over 4
+
+=item --version
+
+Print the version number and exit
+
+=back
+
+=cut
+
+use Getopt::Long;
+my $opts = { version => 0 };
+GetOptions( $opts, 'version' );
+if ($opts->{version}) {
+    say __PACKAGE__ . ' version ' . (__PACKAGE__->VERSION // 'dev');
+    exit;
+}
+
+=head1 DESCRIPTION
+
+L<overthewire.org|http://www.overthewire.org/wargames/> has a series of war games.
+Natas is the server-side security challenge.
+
+Level 16 requires you to do blind shell injection. Guessing each one-character
+slice of a 32-character password is tedious and prone to errors if done manually,
+so this script automates the process. Simply provide the password for level 16
+as the first argument on the command line
+
+=cut
+
+die "Missing a password.\nUsage: natas16 password\n"
+    unless $ARGV[0];
 
 my $host = 'natas16.natas.labs.overthewire.org';
 my $uri  = URI->new(sprintf q{http://%s:%s@%s/index.php}, 'natas16', $ARGV[0], $host);
@@ -56,3 +103,13 @@ foreach my $pos (0..31) {
 }
 
 say "\rPassword is $pw_so_far";
+
+=head1 SEE ALSO
+
+=over 4
+
+=item * L<natas15>
+
+=item * L<App::Natas>
+
+=back

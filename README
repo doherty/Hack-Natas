@@ -1,0 +1,49 @@
+NAME
+    App::Natas - solve some of the Natas server-side security war games
+
+VERSION
+    version 0.001
+
+DESCRIPTION
+    overthewire.org <http://www.overthewire.org/wargames/> has a series of
+    war games. Natas is the server-side security challenge.
+
+    This package contains some scripts to automate solving some of the
+    tedious levels, and documents walking you through all levels up to #17.
+
+SEE ALSO
+    *   natas15
+
+        Level 15 requires you to do blind SQL injection.
+
+    *   natas16
+
+        Level 16 requires you to do blind shell injection.
+
+    *   <https://hashbang.ca/tag/natas>
+
+    *   <http://overthewire.org>
+
+AVAILABILITY
+    The latest version of this module is available from the Comprehensive
+    Perl Archive Network (CPAN). Visit <http://www.perl.com/CPAN/> to find a
+    CPAN site near you, or see <https://metacpan.org/module/App::Natas/>.
+
+SOURCE
+    The development version is on github at
+    <http://github.com/doherty/natas-walkthrough> and may be cloned from
+    <git://github.com/doherty/natas-walkthrough.git>
+
+BUGS AND LIMITATIONS
+    You can make new bug reports, and view existing ones, through the web
+    interface at <https://github.com/doherty/natas-walkthrough/issues>.
+
+AUTHOR
+    Mike Doherty <doherty@cpan.org>
+
+COPYRIGHT AND LICENSE
+    This software is copyright (c) 2013 by Mike Doherty.
+
+    This is free software; you can redistribute it and/or modify it under
+    the same terms as the Perl 5 programming language system itself.
+

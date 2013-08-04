@@ -1,0 +1,29 @@
+#PODNAME: App::Natas
+#VERSION
+#ABSTRACT: solve some of the Natas server-side security war games
+
+=head1 DESCRIPTION
+
+L<overthewire.org|http://www.overthewire.org/wargames/> has a series of war games.
+Natas is the server-side security challenge.
+
+This package contains some scripts to automate solving some of the tedious levels,
+and documents walking you through all levels up to #17.
+
+=head1 SEE ALSO
+
+=over 4
+
+=item * L<natas15>
+
+Level 15 requires you to do blind SQL injection.
+
+=item * L<natas16>
+
+Level 16 requires you to do blind shell injection.
+
+=item * L<https://hashbang.ca/tag/natas>
+
+=item * L<http://overthewire.org>
+
+=back
