@@ -62,18 +62,20 @@ SEE ALSO
     *   <http://overthewire.org>
 
 AVAILABILITY
+    The project homepage is <https://hashbang.ca/tag/natas>.
+
     The latest version of this module is available from the Comprehensive
     Perl Archive Network (CPAN). Visit <http://www.perl.com/CPAN/> to find a
     CPAN site near you, or see <https://metacpan.org/module/Hack::Natas/>.
 
 SOURCE
     The development version is on github at
-    <http://github.com/doherty/natas-walkthrough> and may be cloned from
-    <git://github.com/doherty/natas-walkthrough.git>
+    <http://github.com/doherty/Hack-Natas> and may be cloned from
+    <git://github.com/doherty/Hack-Natas.git>
 
 BUGS AND LIMITATIONS
     You can make new bug reports, and view existing ones, through the web
-    interface at <http://rt.cpan.org>.
+    interface at <https://github.com/doherty/Hack-Natas/issues>.
 
 AUTHOR
     Mike Doherty <doherty@cpan.org>
