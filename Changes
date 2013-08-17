@@ -1,6 +1,10 @@
 Revision history for Perl module {{$dist->name}}
 
 {{$NEXT}}
+  - Rewrite to hopefully be more flexible for future levels
+  - Use Moo roles to factor out common code
+  - Rename to Hack::Natas, to give a hint to its purpose
+  -
 
 0.001     2013-08-12
   - First released version

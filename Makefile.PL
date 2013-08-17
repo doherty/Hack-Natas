@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use 5.016003;
+use 5.016000;
 
 use ExtUtils::MakeMaker 6.30;
 
@@ -20,18 +20,23 @@ my %WriteMakefileArgs = (
     "File::ShareDir::Install" => "0.03",
     "Module::Build" => "0.3601"
   },
-  "DISTNAME" => "App-Natas",
+  "DISTNAME" => "Hack-Natas",
   "EXE_FILES" => [
     "bin/natas16",
     "bin/natas15"
   ],
   "LICENSE" => "perl",
-  "NAME" => "App::Natas",
+  "NAME" => "Hack::Natas",
   "PREREQ_PM" => {
     "Carp" => 0,
     "Data::Dumper" => 0,
     "Getopt::Long" => 0,
     "HTTP::Tiny" => "0.034",
+    "Moo" => 0,
+    "Moo::Role" => 0,
+    "Pod::Usage" => 0,
+    "Type::Utils" => 0,
+    "Types::Standard" => 0,
     "URI" => 0,
     "strict" => 0,
     "warnings" => 0
@@ -42,7 +47,7 @@ my %WriteMakefileArgs = (
     "Test::Script" => "1.05",
     "blib" => 0
   },
-  "VERSION" => "0.001",
+  "VERSION" => "0.002",
   "test" => {
     "TESTS" => "t/*.t"
   }

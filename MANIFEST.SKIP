@@ -1,5 +1,5 @@
 
-#!start included /home/mike/perl5/perlbrew/perls/perl-5.18.0/lib/5.18.0/ExtUtils/MANIFEST.SKIP
+#!start included /home/mike/perl5/perlbrew/perls/perl-5.18.1/lib/5.18.1/ExtUtils/MANIFEST.SKIP
 # Avoid version control files.
 \bRCS\b
 \bCVS\b
@@ -55,7 +55,7 @@
 
 # Avoid MYMETA files
 ^MYMETA\.
-#!end included /home/mike/perl5/perlbrew/perls/perl-5.18.0/lib/5.18.0/ExtUtils/MANIFEST.SKIP
+#!end included /home/mike/perl5/perlbrew/perls/perl-5.18.1/lib/5.18.1/ExtUtils/MANIFEST.SKIP
 
 # Avoid archives of this distribution
-\bApp-Natas-[\d\.\_]+
+\bHack-Natas-[\d\.\_]+
