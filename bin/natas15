@@ -15,18 +15,27 @@ natas15 - solve level 15 of overthewire.org's Natas war games
 
 =head1 SYNOPSIS
 
-    natas15 password
+B<natas15> [ password ]
+
+=head1 DESCRIPTION
+
+L<overthewire.org|http://www.overthewire.org/wargames/> has a series of war games.
+Natas is the server-side security challenge.
+
+Level 15 requires you to do blind SQL injection. Guessing each one-character
+slice of a 32-character password is tedious and prone to errors if done manually,
+so this script automates the process. You will be prompted interactively for the
+password to access this level. If you prefer to run noninteractively, you can
+give the password as the first argument on the command line, but note that the
+password will be visible to other users on the system.
 
 =head1 OPTIONS
 
 =over 4
 
-=item * B<--wrong>, --no-wrong
+=item * --version
 
-Use the wrong SQL to find the incorrect password.
-
-This is useful as a teaching tool, to illustrate the effect of
-neglecting case-sensitivity in your injected SQL.
+Prints the version number and exits.
 
 =back
 
@@ -39,24 +48,13 @@ if ($opts->{version}) {
     say __PACKAGE__ . ' version ' . (__PACKAGE__->VERSION // 'dev');
     exit;
 }
-unless (@ARGV == 1) {
-    require Pod::Usage;
-    Pod::Usage::pod2usage( -msg => 'Incorrect usage' );
-}
 
-=head1 DESCRIPTION
+my $http_pass = shift || do {
+    require Term::ReadPassword;
+    Term::ReadPassword::read_password('Password for this level: ');
+};
 
-L<overthewire.org|http://www.overthewire.org/wargames/> has a series of war games.
-Natas is the server-side security challenge.
-
-Level 15 requires you to do blind SQL injection. Guessing each one-character
-slice of a 32-character password is tedious and prone to errors if done manually,
-so this script automates the process. Simply provide the password for level 15
-as the first argument on the command line
-
-=cut
-
-my $hack = Hack::Natas::15->new(http_pass => shift @ARGV);
+my $hack = Hack::Natas::15->new(http_pass => $http_pass);
 local $SIG{INT} = sub { printf "\rPassword so far: %s\n", $hack->password_so_far; exit 1 };
 $hack->run;
 
