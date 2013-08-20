@@ -2,6 +2,8 @@ Revision history for Perl module {{$dist->name}}
 
 {{$NEXT}}
   - Prompt interactively for the password
+  - Bump Moo dependency to 1.003000 to allow composing
+    roles that require methods provided by the other (RT#82711)
 
 0.002     2013-08-17
   - Rewrite to hopefully be more flexible for future levels

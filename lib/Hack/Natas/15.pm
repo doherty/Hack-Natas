@@ -6,7 +6,7 @@ use v5.16.0;
 # ABSTRACT: solve level 15 of the Natas server-side security war games
 
 use Carp qw(confess);
-use Moo;
+use Moo 1.003000; # RT#82711
 with qw(Hack::Natas Hack::Natas::IncrementalSearch);
 
 =head1 DESCRIPTION
