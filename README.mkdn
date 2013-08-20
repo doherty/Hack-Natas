@@ -4,7 +4,7 @@ Hack::Natas - solve some of the Natas server-side security war games
 
 # VERSION
 
-version 0.002
+version 0.003
 
 # DESCRIPTION
 

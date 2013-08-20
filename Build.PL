@@ -18,7 +18,7 @@ my %module_build_args = (
     "Mike Doherty <doherty\@cpan.org>"
   ],
   "dist_name" => "Hack-Natas",
-  "dist_version" => "0.002",
+  "dist_version" => "0.003",
   "license" => "perl",
   "module_name" => "Hack::Natas",
   "recommends" => {},
@@ -28,7 +28,7 @@ my %module_build_args = (
     "Data::Dumper" => 0,
     "Getopt::Long" => 0,
     "HTTP::Tiny" => "0.034",
-    "Moo" => 0,
+    "Moo" => "1.003000",
     "Moo::Role" => 0,
     "Term::ReadPassword" => 0,
     "Type::Utils" => 0,
